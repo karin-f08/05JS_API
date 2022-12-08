@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>05課題API</title>
+
+
+    <style>
+        #view{
+            padding: 10px;
+            border: 20px solid #e71ab7;
+            width: 50%px;
+            background-color: rgb(110, 176, 233);
+            height:500px;
+            overflow: auto;
+        }
+        img{
+            width:200px;
+        }
+        #view>div{
+            border-bottom: 1px dotted #3838ab;
+            font-size:20px;
+        }
+        .bold{
+            font-weight: bold;
+        }
+        h2{
+            font-size:x-large;
+            color:#f1071e;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h1>
+           <span id="area"></span> 天気5日間
+        </h1>
+        <div id="view"></div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script>
+        //＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+        //MAP表示処理
+        //＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+        const key   = "03fe787d9b26aa4ffef4cbdf2a7eccd9";  
+        const lat   = "0";   //(ジーズ福岡の緯度　33.586641), 
+        const lon   = "0";  //(ジーズ福岡の軽度　130.394471)
+        const icon  = "http://openweathermap.org/img/wn/"; //ICONにアクセスするURL
+
+
+
+
+        //＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+        //OpenWeatherAPI（天気情報を取得）5DAY/3hour
+        //＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+        const url = 'https://api.openweathermap.org/data/2.5/forecast?lat='+lat+'&lon='+lon+'&appid='+key+'&lang=ja';
+        //const url = 'https://pro.openweathermap.org/data/2.5/forecast/climate?lat='+lat+'&lon='+lon+'&appid='+key;
+        //api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={API key}  
+                     //https://pro.openweathermap.org/data/2.5/forecast/climate?lat={lat}&lon={lon}&appid={API key}
+        $.ajax({
+            url:url,
+            type:'get',
+            cache:false,
+            dataType:'json'
+        
+        }).done(function(data){
+            //console.log(data.list[0].dt_txt); //オブジェクト変数を確認
+            console.log(data); //オブジェクト変数を確認
+
+            let html = "";
+            for(let i=0; i<data.list.length; i++){
+                html += `           
+                    <div>
+                        <div>日付：${data.list[i].dt_txt}</div>
+                        <div>天気：${data.list[i].weather[0].description}</div>
+                        <div>風速：${data.list[i].wind.speed}ぐらい</div>
+                        <div><img src="${icon+data.list[0].weather[0].icon}@2x.png"></div>
+
+                    </div>
+            `;
+            }
+
+
+                //作成したHTMLを埋め込む
+                $("#view").append(html);
+                //場所
+                $('#area').html(data.city.name);
+
+
+        });
+
+
+    </script>
+</body>
+</html>
